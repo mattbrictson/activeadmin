@@ -1,0 +1,4 @@
+# frozen_string_literal: true
+if section.block
+  text_node instance_exec(&section.block)
+end
