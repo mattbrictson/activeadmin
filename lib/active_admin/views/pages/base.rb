@@ -33,7 +33,7 @@ module ActiveAdmin
           within body(data_attributes) do
             div id: "wrapper" do
               header active_admin_namespace, current_menu
-              title_bar title, action_items_for_action
+              render "active_admin/page_header", breadcrumb: breadcrumb, title: title, action_items: action_items_for_action
               build_page_content
               render "active_admin/site_footer"
             end
@@ -84,6 +84,17 @@ module ActiveAdmin
           end
         end
 
+        def breadcrumb
+          breadcrumb_config = active_admin_config && active_admin_config.breadcrumb
+
+          links = if breadcrumb_config.is_a?(Proc)
+                    instance_exec(controller, &active_admin_config.breadcrumb)
+                  elsif breadcrumb_config.present?
+                    breadcrumb_links
+                  end
+          return unless links.present? && links.is_a?(::Array)
+          links
+        end
       end
     end
   end
