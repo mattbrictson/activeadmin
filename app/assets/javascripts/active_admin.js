@@ -106,7 +106,7 @@
     Array.from(this.querySelectorAll("input, select, textarea")).filter((el => el.value === "")).forEach((el => el.disabled = true));
   };
   Rails.delegate(document, ".filter_form", "submit", disableEmptyFields);
-  const next = function next(el, selector) {
+  const next$1 = function next(el, selector) {
     const nextEl = el.nextElementSibling;
     if (!selector || nextEl && nextEl.matches(selector)) {
       return nextEl;
@@ -114,12 +114,33 @@
     return null;
   };
   const setSearchType = function(event) {
-    const input = next(this, "input");
+    const input = next$1(this, "input");
     if (input) {
       input.name = `q[${this.value}]`;
     }
   };
   Rails.delegate(document, ".filter_form_field.select_and_search select", "change", setSearchType);
+  const next = function next(el, selector) {
+    const nextEl = el.nextElementSibling;
+    if (!selector || nextEl && nextEl.matches(selector)) {
+      return nextEl;
+    }
+    return null;
+  };
+  const toggleMenu = function(event) {
+    const parent = this.parentNode;
+    const menu = next(this, "[data-menu-list]");
+    if (!("open" in parent.dataset)) {
+      parent.dataset.open = "";
+      menu.classList.remove("hidden");
+      this.querySelector("[data-menu-icon]").classList.add("rotate-90");
+    } else {
+      delete parent.dataset.open;
+      menu.classList.add("hidden");
+      this.querySelector("[data-menu-icon]").classList.remove("rotate-90");
+    }
+  };
+  Rails.delegate(document, "#main-menu [data-menu-button]", "click", toggleMenu);
   const setPerPage = function(event) {
     const params = new URLSearchParams(window.location.search);
     params.set("per_page", this.value);
